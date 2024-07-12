@@ -1,6 +1,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "Image.h"
+#include "image.h"
 #include "stb_image.h"
 #include "stb_image_write.h"
 
@@ -25,7 +25,7 @@ Image::~Image() {
 }
 
 bool Image::read(const char* filename) {
-  stbi_load(filename, &w, &h, &channels, 0);
+  data = stbi_load(filename, &w, &h, &channels, 0);
   return data != NULL;
 }
 bool Image::write(const char* filename) {

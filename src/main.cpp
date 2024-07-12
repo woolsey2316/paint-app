@@ -1,4 +1,4 @@
-#include <image.h>
+#include "image.h"
 
 int main(int argc, char** argv) {
   Image test("test.jpg");
