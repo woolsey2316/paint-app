@@ -13,13 +13,16 @@ Image::Image(const char* filename) {
     printf("Failed to read %s\n", filename);
   }
 }
+
 Image::Image(int w, int h, int channels) : w(w), h(h), channels(channels) {
   size = w*h*channels;
   data = new uint8_t[size];
 }
+
 Image::Image(const Image& img) : w(img.w), h(img.h), channels(img.channels) {
   memcpy(data, img.data, size);
 }
+
 Image::~Image() {
   stbi_image_free(data);
 }
@@ -28,11 +31,13 @@ bool Image::read(const char* filename) {
   data = stbi_load(filename, &w, &h, &channels, 0);
   return data != NULL;
 }
+
 bool Image::write(const char* filename) {
   ImageType type = getFileType(filename);
   int success;
   switch(type) {
     case PNG:
+      printf("type %s %d %d %d %d %d\n", filename, w, h, channels, data, w*channels);
       success = stbi_write_png(filename, w, h, channels, data, w*channels);
       break;
     case BMP:
@@ -64,4 +69,31 @@ ImageType Image::getFileType(const char* filename) {
       return TGA;
     }
   }
+}
+
+Image& Image::grayscale_avg() {
+  if (channels < 3) {
+    printf("Image %p has less than 3 channels, it is assumed to already be grayscale\n", *this);
+  }
+  else {
+    for (int i = 0; i < size; i+=channels) {
+      int gray = (data[i] + data[i+1] + data[i+2] / 3);
+      memset(data+i, gray, 3);
+    }
+  }
+  printf("image converted to gray\n");
+  return *this;
+}
+
+Image& Image::grayscale_lum() {
+  if (channels < 3) {
+    printf("Image %p has less than 3 channels, it is assumed to already be gray\n", *this);
+  }
+  else {
+    for (int i = 0; i < size; i+=channels) {
+      int gray = 0.2126*data[i] + 0.7152*data[i+1] + 0.0722*data[i+2];
+      memset(data+i, gray, 3);
+    }
+  }
+  return *this;
 }

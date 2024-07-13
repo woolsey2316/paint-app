@@ -2,14 +2,16 @@
 
 int main(int argc, char** argv) {
   Image test("test.jpg");
-  test.write("new.png");
-  Image copy = test;
-  for (int i = 0; i < copy.w*copy.channels; i++) {
-    copy.data[i] = 255;
-  }
-  copy.write("copy.png");
-  Image blank(100, 100, 3);
-  blank.write("blank.jpg");
+  
+  Image gray_avg = test;
+  gray_avg.grayscale_avg();
+  int success = gray_avg.write("gray_avg.png");
+  printf("success %d\n", success);
+
+  Image gray_lum = test;
+  gray_lum.grayscale_lum();
+  success = gray_lum.write("gray_lum.png");
+  printf("success %d\n", success);
 
   return 0;
 }
